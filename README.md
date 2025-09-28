@@ -1,7 +1,13 @@
+# HuntLens — AI SOC Copilot
 
-# HuntLens - AI SOC Copilot
+[![CI](https://github.com/glaciergh0st/HuntLens/actions/workflows/ci.yml/badge.svg)](https://github.com/glaciergh0st/HuntLens/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![FastAPI](https://img.shields.io/badge/framework-FastAPI-009688.svg)
+![Next.js](https://img.shields.io/badge/frontend-Next.js-black.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-HuntLens is an **AI-powered SOC copilot**. Give it any SOC artifact - IOC, MITRE ATT&CK ID, attacker GitHub repo, or suspicious process, and it generates NIST 800-61 aligned playbooks (Detection to Resolution). HuntLens delivers queries, EDR steps, threat context; suggests risk prioritization, business impact, optional automation-ready SOAR templates, and confidence/rationale scoring - all grounded in trusted sources.
+
+HuntLens is an **AI-powered SOC copilot** developed by glaciergh0St(David A). Give it any SOC artifact - IOC, MITRE ATT&CK ID, attacker GitHub repo, or suspicious process, and it generates NIST 800-61 aligned playbooks (Detection to Resolution). HuntLens delivers queries, EDR steps, threat context; suggests risk prioritization, business impact, optional automation-ready SOAR templates, and confidence/rationale scoring - all grounded in trusted sources.
 
 HuntLens acts as a knowledge-augmented assistant for SOC teams: providing context, generating detection queries, guiding response, and suggesting workflow automation, all with analyst safety and clarity.
 
@@ -115,7 +121,4 @@ HuntLens is a **copilot, not an autopilot**. It supports SOC analysts by providi
 See `docs/driver_plan.md` for Copilot instructions
 
 
-
-
-HuntLens is an AI SOC copilot. Feed it any SOC artifact, IOC, MITRE ID, attacker GitHub repos, or suspicious process, and it generates NIST-aligned playbooks (Detection to Resolution) with queries, EDR steps, context, risk priotization, business impact, and optional SOAR templates - all grounded in trusted sources.
 
