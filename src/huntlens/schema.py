@@ -1,51 +1,59 @@
-
 """
 schema.py
 
 Purpose:
-- Define and validate the JSON schema used for all HuntLens outputs.
-- Enforce that Detection-to-Resolution playbooks are structured, safe, and machine-readable.
+- Define and validate the JSON schema used for HuntLens playbooks.
+- Enforce NIST 800-61 structured outputs: detection, analysis, containment,
+  eradication, recovery, post_incident.
 
-Functions / Classes to implement:
-1. get_schema() -> dict
-   - Return the current JSON schema definition for HuntLens playbooks.
-2. ensure_schema(data: dict) -> dict
-   - Validate `data` against the schema.
-   - Raise a clear exception if invalid.
-   - Return `data` unchanged if valid.
+Functions:
+- get_schema() -> dict
+    Return the schema loaded from docs/schema.json.
+- ensure_schema(obj: dict) -> dict
+    Validate obj against schema.json using jsonschema.
+    Raise ValidationError if invalid, otherwise return obj unchanged.
 
-Requirements:
-- Schema should align with NIST 800-61 phases:
-  detection, analysis, containment, eradication, recovery, post_incident.
-- Must allow optional SOAR playbook stubs, references, and rationale fields.
-- Use `jsonschema` for validation.
-
-Safety Rules:
-- Never modify input data during validation.
-- Fail fast on invalid or unexpected fields.
-- Keep schema definitions versioned and extendable.
-- Schema is the single source of truth for all generated playbooks.
+Safety rules:
+- Never modify input objects.
+- Fail fast on invalid fields.
+- Schema is the single source of truth for playbook structure.
 """
 
-
-"""Load docs/schema.json and implement ensure_schema(obj) using jsonschema; raise ValidationError on failure.
-"""
-
-
-import json
 import os
+import json
 from jsonschema import validate, ValidationError
 
-# Path to docs/schema.json relative to this file
-SCHEMA_PATH = os.path.join(os.path.dirname(__file__), '..', 'docs', 'schema.json')
+# Resolve schema path relative to repo root
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHEMA_PATH = os.path.join(BASE_DIR, "..", "..", "docs", "schema.json")
 
 # Load schema once at module import
-with open(SCHEMA_PATH, 'r') as f:
+with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
     _schema = json.load(f)
 
-def ensure_schema(obj: dict):
+
+def get_schema() -> dict:
     """
-    Validates the given object against docs/schema.json.
-    Raises jsonschema.ValidationError if validation fails.
+    Return the current HuntLens JSON schema definition.
+
+    Returns:
+        dict: The loaded JSON schema.
+    """
+    return _schema
+
+
+def ensure_schema(obj: dict) -> dict:
+    """
+    Validate an object against the HuntLens schema.
+
+    Args:
+        obj (dict): Candidate playbook-like object.
+
+    Returns:
+        dict: The same object if validation succeeds.
+
+    Raises:
+        jsonschema.ValidationError: If validation fails.
     """
     validate(instance=obj, schema=_schema)
+    return obj

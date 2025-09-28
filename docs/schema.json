@@ -1,5 +1,53 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "HuntLens Playbook",
-  "type": "object"
+  "title": "HuntLens Playbook Schema",
+  "description": "Schema for structured SOC playbooks aligned with NIST 800-61.",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "type": "string",
+      "description": "The primary SOC artifact (e.g., IOC, process name, MITRE ID)."
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": ["ioc", "process", "mitre", "repo", "other"],
+      "description": "Type/category of the artifact."
+    },
+    "nist_phase_playbook": {
+      "type": "object",
+      "description": "Detection-to-Resolution steps aligned to NIST 800-61.",
+      "properties": {
+        "detection": { "type": "array", "items": { "type": "object" } },
+        "analysis": { "type": "array", "items": { "type": "object" } },
+        "containment": { "type": "array", "items": { "type": "object" } },
+        "eradication": { "type": "array", "items": { "type": "object" } },
+        "recovery": { "type": "array", "items": { "type": "object" } },
+        "post_incident": { "type": "array", "items": { "type": "object" } }
+      },
+      "required": [
+        "detection",
+        "analysis",
+        "containment",
+        "eradication",
+        "recovery",
+        "post_incident"
+      ],
+      "additionalProperties": false
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of reference sources (MITRE, vendor docs, IR cases)."
+    },
+    "soar_playbook_template": {
+      "type": "string",
+      "description": "Optional SOAR stub in YAML/JSON format."
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Optional explanation of confidence, reasoning, or analyst notes."
+    }
+  },
+  "required": ["artifact", "artifact_type", "nist_phase_playbook", "references"],
+  "additionalProperties": false
 }
