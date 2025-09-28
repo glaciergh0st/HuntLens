@@ -118,7 +118,71 @@ HuntLens is a **copilot, not an autopilot**. It supports SOC analysts by providi
 2. Run backend: `uvicorn src.huntlens.api:app --reload`
 3. Run frontend: `cd web && npm install && npm run dev`
 
-See `docs/driver_plan.md` for Copilot instructions
+***See `docs/driver_plan.md` for Copilot instructions
 
+You’re right—the last snippet I gave you had an **outer ```markdown** wrapper. If you pasted that wrapper too, GitHub will treat the whole section as a single code block, breaking all formatting.
+
+### Fix
+
+Replace your “Development Setup and Testing” section with the **plain markdown below** (no outer wrapper). Copy exactly from the first line `## Development Setup and Testing` to the last code fence.
+
+## Development Setup and Testing
+
+### 1. Create and activate a virtual environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+### 3. Run the backend locally
+
+```bash
+make dev
+```
+
+or
+
+```bash
+python -m uvicorn src.huntlens.api:app --reload
+```
+
+### 4. Run the web frontend
+
+```bash
+make web
+```
+
+or
+
+```bash
+cd web && npm install && npm run dev
+```
+
+### 5. Run tests
+
+```bash
+pytest -q
+```
+
+By default, tests live in the `tests/` directory:
+
+* `test_smoke.py` → checks the repo is wired correctly.
+* `test_schema.py` → validates the JSON schema logic.
+* As you implement new modules (`repo_fetcher.py`, `readme_parser.py`, etc.), more tests will cover them.
+
+### 6. Code style (optional)
+
+```bash
+pip install black flake8
+black src tests
+flake8 src tests
+```
 
 
