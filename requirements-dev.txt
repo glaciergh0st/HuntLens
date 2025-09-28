@@ -1,5 +1,6 @@
-fastapi
-uvicorn[standard]
-jsonschema
 pytest
+pytest-cov
+jsonschema
 gitpython
+flake8
+black
