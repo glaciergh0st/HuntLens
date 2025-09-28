@@ -7,6 +7,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 
+
 HuntLens is an **AI-powered SOC copilot** developed by glaciergh0St(David A). Give it any SOC artifact - IOC, MITRE ATT&CK ID, attacker GitHub repo, or suspicious process, and it generates NIST 800-61 aligned playbooks (Detection to Resolution). HuntLens delivers queries, EDR steps, threat context; suggests risk prioritization, business impact, optional automation-ready SOAR templates, and confidence/rationale scoring - all grounded in trusted sources.
 
 HuntLens acts as a knowledge-augmented assistant for SOC teams: providing context, generating detection queries, guiding response, and suggesting workflow automation, all with analyst safety and clarity.
