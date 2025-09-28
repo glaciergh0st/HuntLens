@@ -1,4 +1,37 @@
-"""Load docs/schema.json and implement ensure_schema(obj) using jsonschema; raise ValidationError on failure."""
+
+"""
+schema.py
+
+Purpose:
+- Define and validate the JSON schema used for all HuntLens outputs.
+- Enforce that Detection-to-Resolution playbooks are structured, safe, and machine-readable.
+
+Functions / Classes to implement:
+1. get_schema() -> dict
+   - Return the current JSON schema definition for HuntLens playbooks.
+2. ensure_schema(data: dict) -> dict
+   - Validate `data` against the schema.
+   - Raise a clear exception if invalid.
+   - Return `data` unchanged if valid.
+
+Requirements:
+- Schema should align with NIST 800-61 phases:
+  detection, analysis, containment, eradication, recovery, post_incident.
+- Must allow optional SOAR playbook stubs, references, and rationale fields.
+- Use `jsonschema` for validation.
+
+Safety Rules:
+- Never modify input data during validation.
+- Fail fast on invalid or unexpected fields.
+- Keep schema definitions versioned and extendable.
+- Schema is the single source of truth for all generated playbooks.
+"""
+
+
+"""Load docs/schema.json and implement ensure_schema(obj) using jsonschema; raise ValidationError on failure.
+"""
+
+
 import json
 import os
 from jsonschema import validate, ValidationError
