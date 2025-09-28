@@ -1,0 +1,7 @@
+{
+  "artifact": "aws elbv2 create-listener ...",
+  "artifact_type": "cloud_command",
+  "references": [
+    "https://docs.aws.amazon.com/config/latest/developerguide/elb-tls-security-policy-check.html"
+  ]
+}

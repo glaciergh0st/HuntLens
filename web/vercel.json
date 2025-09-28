@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "env": {
+    "BACKEND_URL": "https://your-backend-host:8000"
+  }
+}

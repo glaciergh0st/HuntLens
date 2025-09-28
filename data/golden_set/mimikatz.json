@@ -1,0 +1,7 @@
+{
+  "artifact": "https://github.com/gentilkiwi/mimikatz",
+  "artifact_type": "repo",
+  "references": [
+    "https://attack.mitre.org/techniques/T1003/"
+  ]
+}
