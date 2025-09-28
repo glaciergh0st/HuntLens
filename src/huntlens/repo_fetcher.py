@@ -2,48 +2,38 @@
 repo_fetcher.py
 
 Purpose:
-- Clone or snapshot GitHub repos (attacker tools, suspicious code, etc.) into a temp directory.
-- Extract useful context (README, file listing, recent commits) for HuntLens enrichment.
+- Safely fetch and extract metadata from GitHub repos (attacker tools or otherwise).
+- Provide downstream modules with README content, file inventory, and commit history.
 
 Functions:
 1. fetch_repo_snapshot(url: str, branch: str = "main", max_commits: int = 5) -> dict
-   - Shallow clone (depth=1) into a safe temp directory.
-   - Return structured metadata:
-       {
-         "url": str,
-         "path": str,
-         "readme": Optional[str],
-         "files": List[str],
-         "commits": List[str]
-       }
-   - Enforce max file size (5MB).
-   - Handle errors gracefully.
+    - Clone a repo shallowly into a temp directory.
+    - Extract README (if available), list of files (limit 5MB each), and last N commit messages.
+    - Return a structured dict.
 
 2. cleanup_repo(path: str) -> None
-   - Remove the temp directory.
+    - Delete the temporary repo safely.
 
-Requirements:
-- Use GitPython for cloning.
+Safety:
+- Always shallow clone (depth=1).
 - Never execute repo code.
-- Support both GitHub HTTPS/SSH URLs and local `file://` repos (for tests).
-- Always clean up temp directories when done.
+- Gracefully handle missing branch, missing README, and large files.
 """
 
 import os
-import shutil
 import tempfile
+import shutil
 from typing import Dict, List, Optional
-
 from git import Repo, GitCommandError
 
 
 def fetch_repo_snapshot(url: str, branch: str = "main", max_commits: int = 5) -> Dict:
     """
-    Clone a repo shallowly and extract context.
+    Clone a GitHub repo shallowly and extract useful context.
 
     Args:
         url (str): Repo URL (https/ssh/file://).
-        branch (str): Branch name (default: "main").
+        branch (str): Branch to checkout (default: main).
         max_commits (int): Number of commit messages to extract.
 
     Returns:
@@ -56,18 +46,22 @@ def fetch_repo_snapshot(url: str, branch: str = "main", max_commits: int = 5) ->
         }
 
     Raises:
-        ValueError: If repo cannot be cloned.
+        ValueError: If the repo cannot be cloned or accessed.
     """
     tmp_dir = tempfile.mkdtemp(prefix="huntlens_repo_")
 
+    # Try branch first, fallback to default
     try:
         repo = Repo.clone_from(url, tmp_dir, branch=branch, depth=1)
-    except GitCommandError as e:
-        shutil.rmtree(tmp_dir, ignore_errors=True)
-        raise ValueError(f"Failed to clone repo: {e}")
+    except GitCommandError:
+        try:
+            repo = Repo.clone_from(url, tmp_dir, depth=1)  # let Git pick default branch
+        except GitCommandError as e:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            raise ValueError(f"Failed to clone repo: {e}")
 
-    # Try to read README
-    readme_content: Optional[str] = None
+    # Try to extract README
+    readme_content = None
     for name in ["README.md", "readme.md", "README"]:
         path = os.path.join(tmp_dir, name)
         if os.path.exists(path):
@@ -75,22 +69,22 @@ def fetch_repo_snapshot(url: str, branch: str = "main", max_commits: int = 5) ->
                 readme_content = f.read()
             break
 
-    # Collect file list (skip >5MB)
+    # Collect small file paths
     file_list: List[str] = []
     for root, _, files in os.walk(tmp_dir):
         for file in files:
             full_path = os.path.join(root, file)
             rel_path = os.path.relpath(full_path, tmp_dir)
             try:
-                if os.path.getsize(full_path) <= 5 * 1024 * 1024:
+                if os.path.getsize(full_path) <= 5 * 1024 * 1024:  # 5MB max
                     file_list.append(rel_path)
             except OSError:
                 continue
 
-    # Get last N commit messages
-    commits: List[str] = []
+    # Get last N commits (may fail if no history)
+    commits = []
     try:
-        commits = [c.message.strip() for c in repo.iter_commits(branch, max_count=max_commits)]
+        commits = [c.message.strip() for c in repo.iter_commits(max_count=max_commits)]
     except Exception:
         pass
 
@@ -105,6 +99,6 @@ def fetch_repo_snapshot(url: str, branch: str = "main", max_commits: int = 5) ->
 
 def cleanup_repo(path: str) -> None:
     """
-    Delete the temporary repo directory.
+    Remove the temporary repo directory.
     """
     shutil.rmtree(path, ignore_errors=True)
