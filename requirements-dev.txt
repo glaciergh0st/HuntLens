@@ -1,6 +1,17 @@
+# Testing
 pytest
 pytest-cov
+
+# Schema validation
 jsonschema
+
+# Git interaction
 gitpython
+
+# Linting & formatting
 flake8
 black
+
+# Python version enforcement (comment for contributors)
+; Requires Python >=3.11 (compatible with 3.13)
+
