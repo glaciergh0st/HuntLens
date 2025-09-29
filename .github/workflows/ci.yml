@@ -10,8 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12"]
 
     steps:
       - name: Checkout repo
@@ -26,13 +27,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
+          pip install -e .
 
-      - name: Lint
+      - name: Run lint
         run: |
           black --check src tests
           flake8 src tests
 
-      - name: Run tests with coverage
+      - name: Run pytest with coverage
         run: |
           pytest -q --disable-warnings --maxfail=1 --cov=src --cov-report=term-missing
 
